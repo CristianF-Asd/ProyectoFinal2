@@ -88,11 +88,11 @@ public class RegistrerFragment extends Fragment {
                 "$";
 
         if(value.isEmpty()){
-            email.setError("Rellene el campo vacio");
+            password.setError("Rellene el campo vacio");
             return false;
         }else if(!value.matches(passwordPattern)) {
-            email.setError("contraseña invalido");
-            email.requestFocus();
+            password.setError("contraseña invalido");
+            password.requestFocus();
             return false;
         }else{
             email.setError(null);
@@ -104,6 +104,17 @@ public class RegistrerFragment extends Fragment {
         String pass = password.getText().toString();
         String confPass = confirmPassword.getEditableText().toString();
 
-        return pass.equals(confPass) ? true : false;
+        if(confPass.isEmpty()) {
+            confirmPassword.setError("Rellene el campo vacio");
+            return false;
+        }
+        if(!pass.equals(confPass)){
+            confirmPassword.setError("No coinciden las contraseñas");
+            confirmPassword.requestFocus();
+            return false;
+        }else{
+            confirmPassword.setError(null);
+            return true;
+        }
     }
 }

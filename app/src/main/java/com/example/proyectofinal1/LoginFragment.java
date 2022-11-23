@@ -17,7 +17,7 @@ import com.example.proyectofinal1.View.CallFragment;
 public class LoginFragment extends Fragment {
     
     Button btnLogin,btnRegistro;
-    EditText etUserName, etPassword;
+    EditText email, etPassword;
     CallFragment callFragment;
 
     @Nullable
@@ -25,7 +25,7 @@ public class LoginFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,@Nullable ViewGroup container,@Nullable
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login,container,false);
-        etUserName = view.findViewById(R.id.et_username);
+        email = view.findViewById(R.id.et_username);
         etPassword = view.findViewById(R.id.etpassword);
 
         btnLogin = (Button) view.findViewById(R.id.btnLogin);
@@ -34,7 +34,8 @@ public class LoginFragment extends Fragment {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(!validateEmail() | !validatePassword())
+                    return;
             }
         });
 
@@ -54,5 +55,41 @@ public class LoginFragment extends Fragment {
         this.callFragment = callFragment;
     }
 
+    public Boolean validateEmail(){
+        String value = email.getText().toString();
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+
+        if(value.isEmpty()){
+            email.setError("Rellene el campo vacio");
+            return false;
+        }else if(!value.matches(emailPattern)) {
+            email.setError("Correo electronico invalido");
+            return false;
+        }else{
+            email.setError(null);
+            return true;
+        }
+    }
+
+    public Boolean validatePassword(){
+        String value = etPassword.getText().toString();
+        String passwordPattern = "^"+
+                "(?=.*[a-zA-Z0-9])" +   //cualquier caracter
+                "(?=\\s+$)" +           //sin espacios en blanco
+                ".{4,}" +               //mas de 4 caracteres
+                "$";
+
+        if(value.isEmpty()){
+            etPassword.setError("Rellene el campo vacio");
+            return false;
+        }else if(!value.matches(passwordPattern)) {
+            etPassword.setError("contraseña invalido");
+            etPassword.requestFocus();
+            return false;
+        }else{
+            etPassword.setError(null);
+            return true;
+        }
+    }
 
 }
