@@ -10,31 +10,54 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.example.proyectofinal1.Model.User;
 import com.example.proyectofinal1.View.CallFragment;
+
+import java.util.ArrayList;
 
 
 public class LoginFragment extends Fragment {
     
     Button btnLogin,btnRegistro;
-    EditText email, etPassword;
+    EditText etUserName, etPassword;
     CallFragment callFragment;
+    private DBHelper dbHelper;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,@Nullable ViewGroup container,@Nullable
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login,container,false);
-        email = view.findViewById(R.id.et_username);
+        etUserName = view.findViewById(R.id.et_username);
         etPassword = view.findViewById(R.id.etpassword);
 
         btnLogin = (Button) view.findViewById(R.id.btnLogin);
         btnRegistro = (Button) view.findViewById(R.id.btnRegistro);
 
+        dbHelper =new DBHelper(getContext());
+        dbHelper.OpenDB();
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!validateEmail() | !validatePassword())
+                if(!validateEmail() | !validatePassword()){
+                    ArrayList<User> users = dbHelper.LoginUser(etUserName.getText().toString(), etPassword.getText().toString());
+                    if(users.size()!= 0 ){
+                        User uses1 = users.get(0);
+                        Toast.makeText(getActivity().getApplicationContext(), "Usuario Valido", Toast.LENGTH_SHORT).show();
+                        LoginFragment fragment1 = new LoginFragment();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment1).commit();
+
+                    }else{
+                        Toast.makeText(getActivity().getApplicationContext(), "Usuario No Valido", Toast.LENGTH_SHORT).show();
+                    }
+
+
+                }
+
+
                     return;
             }
         });
@@ -56,17 +79,17 @@ public class LoginFragment extends Fragment {
     }
 
     public Boolean validateEmail(){
-        String value = email.getText().toString();
+        String value = etUserName.getText().toString();
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
         if(value.isEmpty()){
-            email.setError("Rellene el campo vacio");
+            etUserName.setError("Rellene el campo vacio");
             return false;
         }else if(!value.matches(emailPattern)) {
-            email.setError("Correo electronico invalido");
+            etUserName.setError("Correo electronico invalido");
             return false;
         }else{
-            email.setError(null);
+            etUserName.setError(null);
             return true;
         }
     }
@@ -82,11 +105,13 @@ public class LoginFragment extends Fragment {
         if(value.isEmpty()){
             etPassword.setError("Rellene el campo vacio");
             return false;
-        }else if(!value.matches(passwordPattern)) {
-            etPassword.setError("contraseña invalido");
-            etPassword.requestFocus();
-            return false;
-        }else{
+        }
+        //else if(!value.matches(passwordPattern)) {
+          //  etPassword.setError("contraseña invalido");
+            //etPassword.requestFocus();
+            //return false;
+        //}
+        else{
             etPassword.setError(null);
             return true;
         }

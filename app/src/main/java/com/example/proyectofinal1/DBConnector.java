@@ -14,7 +14,7 @@ public class DBConnector extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("create table cleanerInfo(UserName VARCHAR unique, correo VARCHAR, password VARCHAR)");
+        sqLiteDatabase.execSQL("create table userInfo(UserName VARCHAR, Email VARCHAR unique, Password VARCHAR)");
 
     }
 
